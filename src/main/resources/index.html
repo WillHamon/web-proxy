@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebProxy</title>
+    </head>
+
+    <body>
+        <p>Web Proxy: by Will Hamon<br> a WIP</p>
+        <input type="text" id="target" name="target">
+        <button id="go">Go!</button>
+    </body>
+
+    <script>
+        document.getElementById("go").addEventListener("click", function()
+        {
+            var input = document.getElementById("target").value;
+            var uri = encodeURIComponent(input);
+            window.open("proxy/" + uri);
+        });
+    </script>
+</html>
