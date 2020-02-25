@@ -6,13 +6,13 @@ import java.net.URLEncoder;
 
 public class Utils
 {
-	public static String encodeURI(String uri)
+	public static String encodeURL(String url)
 	{
 		String encoded;
 
 		try
 		{
-			encoded = URLEncoder.encode(uri, "UTF-8")
+			encoded = URLEncoder.encode(url, "UTF-8")
 					.replaceAll("\\+", "%20")
 					.replaceAll("\\%21", "!")
 					.replaceAll("\\%27", "'")
@@ -20,20 +20,20 @@ public class Utils
 					.replaceAll("\\%29", ")")
 					.replaceAll("\\%7E", "~");
 
-		} catch (UnsupportedEncodingException e) { encoded = uri; }
+		} catch (UnsupportedEncodingException e) { encoded = url; }
 
 		return encoded;
 	}
 
-	public static String decodeURI(String uri)
+	public static String decodeURL(String url)
 	{
 		String decoded;
 
 		try
 		{
-			decoded = URLDecoder.decode(uri, "UTF-8");
+			decoded = URLDecoder.decode(url, "UTF-8");
 
-		} catch (UnsupportedEncodingException e) { decoded = uri; }
+		} catch (UnsupportedEncodingException e) { decoded = url; }
 
 		return decoded;
 	}

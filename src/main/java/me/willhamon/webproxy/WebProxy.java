@@ -9,7 +9,7 @@ import java.net.InetSocketAddress;
 
 public class WebProxy
 {
-	//TODO: PROXY RESOURCES FOR HTML FILES
+	//TODO: FINISH PROXYING RESOURCES FOR HTML FILES
 
 	private static final int PORT = 8080;
 
