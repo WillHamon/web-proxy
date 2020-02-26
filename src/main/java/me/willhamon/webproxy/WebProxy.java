@@ -9,9 +9,9 @@ import java.net.InetSocketAddress;
 
 public class WebProxy
 {
-	//TODO: FINISH PROXYING RESOURCES FOR HTML FILES
+	//TODO: FIX CUTTING OFF OF REQUEST BODIES
 
-	private static final int PORT = 8080;
+	private static final int PORT = 80;
 
 	public WebProxy()
 	{

@@ -1,18 +1,17 @@
 package me.willhamon.webproxy;
 
+import org.jsoup.nodes.Document;
+
 public class Transformers
 {
-	public static byte[] html(String uri, byte[] bytes)
+	public static void html(Document document)
 	{
-		String encodedUri = Utils.encodeURL(uri) + "/";
+		// transform hrefs
+		document.getElementsByAttribute("href").forEach(element ->
+				element.attr("href", Utils.encodeURL(element.attr("abs:href"))));
 
-		String string = new String(bytes);
-
-		//gotta do some fixing here
-		string = string.replaceAll(encodedUri, "");
-		string = string.replaceAll("src=\"", "src=\"" + encodedUri);
-		string = string.replaceAll("href=\"", "href=\"" + encodedUri);
-
-		return string.getBytes();
+		// transform srcs
+		document.getElementsByAttribute("src").forEach(element ->
+				element.attr("src", Utils.encodeURL(element.attr("abs:src"))));
 	}
 }
