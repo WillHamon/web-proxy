@@ -9,7 +9,7 @@ import java.net.InetSocketAddress;
 
 public class WebProxy
 {
-	//TODO: FIX CUTTING OFF OF REQUEST BODIES
+	//TODO: FIX CUTTING OFF OF REQUEST BODIES AKA WAIT FOR CONNECTION
 
 	private static final int PORT = 80;
 
