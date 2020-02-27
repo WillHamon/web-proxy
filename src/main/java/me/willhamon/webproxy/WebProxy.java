@@ -7,9 +7,16 @@ import me.willhamon.webproxy.handlers.ProxyHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+//
+//	Web-Proxy
+//	Created by Will Hamon
+//
+
 public class WebProxy
 {
-	//TODO: FIX CUTTING OFF OF REQUEST BODIES AKA WAIT FOR CONNECTION
+	//TODO: ADD HEADERS TO PROXY RESOPONSE,
+	// FIX JS COMMENTS BREAKING SCRIPT TAGS IN JSOUP,
+	// ADD RESPONSE CODE HANDLING IN CONNECTION PROXY:CONNECT()
 
 	private static final int PORT = 80;
 

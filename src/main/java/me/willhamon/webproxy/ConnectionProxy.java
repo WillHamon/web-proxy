@@ -3,8 +3,9 @@ package me.willhamon.webproxy;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -12,61 +13,22 @@ import java.util.Map;
 
 public class ConnectionProxy
 {
+	private String baseUrl;
+	private HttpURLConnection connection;
 	private byte[] bytes;
-	private Map<String, List<String>> headers;
 
 	public ConnectionProxy(String url) throws IOException
 	{
+		this.baseUrl = url;
+
 		// open url connection
-		HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
+		connection = (HttpURLConnection)new URL(url).openConnection();
 		connection.setConnectTimeout(5000);
-		connection.connect();
-
-		// wait for connection?
-		// need to move this out of constructor
-		if(connection.getResponseCode() != 200)
-		{
-			bytes = "Error Connecting".getBytes();
-			headers = null;
-			return;
-		}
-
-		// get headers
-		headers = connection.getHeaderFields();
-
-		// get input stream from url
-		InputStream in = connection.getInputStream();
-
-		// copy bytes from input stream into byte array
-		bytes = new byte[in.available()];
-		in.read(bytes, 0, in.available());
-
-		// close input stream
-		in.close();
-
-		// if page is html, open in jsoup
-		String html = new String(bytes);
-		if(html.contains("<html>"))
-		{
-			// parse html
-			Document document = Jsoup.parse(html);
-
-			//set base uri for transformations
-			document.setBaseUri(url);
-
-			// transform document
-			html(document);
-
-			// copy bytes to array
-			bytes = document.html().getBytes();
-		}
-
-		connection.disconnect();
 	}
 
 	public Map<String, List<String>> getHeaders()
 	{
-		return headers;
+		return connection.getHeaderFields();
 	}
 
 	public int getBodyLength()
@@ -79,10 +41,42 @@ public class ConnectionProxy
 		return bytes;
 	}
 
-	/* ----------------  TRANSFORMERS ----------------  */
-
-	private static void html(Document document)
+	public void connect() throws IOException
 	{
+		connection.connect();
+
+		// wait for connection?
+		if(connection.getResponseCode() != 200)
+		{
+			System.out.println("Error proxying connection: " + baseUrl + ":" + connection.getResponseCode());
+			return;
+		}
+
+		// get buffered reader from url
+		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+		// write bytes from buffered reader into string builder into byte array
+		StringBuilder sb = new StringBuilder();
+		br.lines().forEach(s -> sb.append(s));
+		br.close();
+		bytes = sb.toString().getBytes();
+
+		// if page is html, modify specifics
+		if(connection.getHeaderField("Content-Type").contains("text/html")) html();
+
+		connection.disconnect();
+	}
+
+	/* ----------------  DOCUMENT-SPECIFIC MODIFIERS ----------------  */
+
+	private void html()
+	{
+		// parse html
+		Document document = Jsoup.parse(new String(bytes));
+
+		//set base uri for transformations
+		document.setBaseUri(baseUrl);
+
 		// transform hrefs
 		document.getElementsByAttribute("href").forEach(element ->
 				element.attr("href", Utils.encodeURL(element.attr("abs:href"))));
@@ -90,5 +84,8 @@ public class ConnectionProxy
 		// transform srcs
 		document.getElementsByAttribute("src").forEach(element ->
 				element.attr("src", Utils.encodeURL(element.attr("abs:src"))));
+
+		// copy bytes to array
+		bytes = document.html().getBytes();
 	}
 }
