@@ -20,11 +20,9 @@ public class ProxyHandler implements HttpHandler
 		proxy.connect();
 
 		// set headers
-		// not working rn
-		//he.getRequestHeaders().putAll(proxy.getHeaders());
+		proxy.setHeaders(he.getResponseHeaders());
 
 		// write bytes to response body
-		if(proxy.getBodyLength() == 0 && url.equals("https://willhamon.github.io/")) System.out.println(new String(proxy.getBody()));
 		he.sendResponseHeaders(200, proxy.getBodyLength());
 		he.getResponseBody().write(proxy.getBody());
 		he.close();

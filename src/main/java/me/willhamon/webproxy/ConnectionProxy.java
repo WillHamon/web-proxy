@@ -1,5 +1,6 @@
 package me.willhamon.webproxy;
 
+import com.sun.net.httpserver.Headers;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -26,9 +27,12 @@ public class ConnectionProxy
 		connection.setConnectTimeout(5000);
 	}
 
-	public Map<String, List<String>> getHeaders()
+	public void setHeaders(Headers headers)
 	{
-		return connection.getHeaderFields();
+		headers.add("Content-Type", connection.getHeaderField("Content-Type"));
+
+		// this doesn't work for some reason :(
+		//connection.getHeaderFields().keySet().forEach(header -> headers.add(header, connection.getHeaderField(header)));
 	}
 
 	public int getBodyLength()
@@ -57,7 +61,7 @@ public class ConnectionProxy
 
 		// write bytes from buffered reader into string builder into byte array
 		StringBuilder sb = new StringBuilder();
-		br.lines().forEach(s -> sb.append(s));
+		br.lines().forEach(s -> sb.append(s).append("\n"));
 		br.close();
 		bytes = sb.toString().getBytes();
 

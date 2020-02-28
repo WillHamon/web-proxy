@@ -15,7 +15,6 @@ import java.net.InetSocketAddress;
 public class WebProxy
 {
 	//TODO: ADD HEADERS TO PROXY RESOPONSE,
-	// FIX JS COMMENTS BREAKING SCRIPT TAGS IN JSOUP,
 	// ADD RESPONSE CODE HANDLING IN CONNECTION PROXY:CONNECT()
 
 	private static final int PORT = 80;
